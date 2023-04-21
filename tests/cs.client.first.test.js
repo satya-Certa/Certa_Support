@@ -36,35 +36,46 @@ test("Client first test", async ({ browser }) => {
   await page.locator('(//span[@class="field-label-text css-8jinf7-CustomText"])[3]').click();
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('button', { name: 'Submit' }).click();
+  await page.waitForTimeout(5000);
   await expect(page.locator("//span[@class='css-159s1wv-CustomText']")).toHaveText('Request Submitted');
+  console.log('1st test completed issue reporting');
   //await page.close();
 
   //---------------------------------------------------------------------------------------------------------------------------------------//
   await page.locator("(//button[@class='ant-btn css-1pxfzzn-Button ant-btn-default'])[1]").click();
   await page.locator("(//span[@class='button-text css-1hr6m4s-CustomText'])[1]").click();
   await page.locator("//div[text()='Certa Support']").click();
- // const page1Promise = page.waitForEvent('popup');
-  await page.getByRole('button', { name: 'Expanded view' }).click();
- // const page1 = await page1Promise;
-  await page.locator("//span[@class='ant-cascader-picker-label']").click();
-  await page.locator("//ul//li[text()='Report a bug']").click();
-  //test.setTimeout(120000);
-  await page.locator('(//span[@class="ant-cascader-picker-label"])[2]').click();
-  await page.getByRole('menuitem', { name: 'Access Issues' }).click();
-  await page.locator('.ant-select-selector').click();
-  await page.getByText('All').nth(2).click();
-  await page.getByRole('textbox').nth(2).click();
-  await page.getByRole('textbox').nth(2).fill('script testing');
-  await page.getByRole('button', { name: 'Select file' }).click();
-  await page.getByRole('button', { name: 'Select file' }).setInputFiles('Untitled.jpg');
-  await page.getByRole('button', { name: 'Submit' }).click();
+  console.log(await page.title());
+  // const page1Promise = page.waitForEvent('popup');
+  const [newPage] = await Promise.all([
+    context.waitForEvent('page'),
+    page.getByRole('button', { name: 'Expanded view' }).click()
+  ])
+  // await page.getByRole('button', { name: 'Expanded view' }).click();
+  console.log(await newPage.title());
+  // const page1 = await page1Promise;
+  await newPage.locator("//span[@class='ant-cascader-picker-label']").click();
+  await newPage.locator("//ul//li[text()='Ask a question']").click();
+  await newPage.waitForTimeout(5000);
+  await newPage.locator("//span//textarea[@class='ant-input']").type("Testin ask a question");
+  /*await newPage.getByRole('menuitem', { name: 'Access Issues' }).click();
+  await newPage.locator('.ant-select-selector').click();
+  await newPage.getByText('All').nth(2).click();
+  await newPage.getByRole('textbox').nth(2).click();
+  await newPage.getByRole('textbox').nth(2).fill('script testing');
+  await newPage.getByRole('button', { name: 'Select file' }).click();
+  await newPage.getByRole('button', { name: 'Select file' }).setInputFiles('Untitled.jpg');*/
+  await newPage.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator("//span[@class='css-1dlvumy-CustomText']")).toHaveText('Request Submitted');
+  console.log('2st test completed asking a quetion');
+
 
 
 });
 
 /*
 test("Report issue in expanded view", async ({ page }) => {
-
+  await page.locator("(//button[@class='ant-btn css-1pxfzzn-Button ant-btn-default'])[1]").click();
   await page.locator("(//span[@class='button-text css-1hr6m4s-CustomText'])[1]").click();
   await page.locator("//div[text()='Certa Support']").click();
  // const page1Promise = page.waitForEvent('popup');
@@ -82,6 +93,7 @@ test("Report issue in expanded view", async ({ page }) => {
   await page.getByRole('button', { name: 'Select file' }).click();
   await page.getByRole('button', { name: 'Select file' }).setInputFiles('Untitled.jpg');
   await page.getByRole('button', { name: 'Submit' }).click();
+  
 
 });*/
 

@@ -1,8 +1,7 @@
 import { test, expect, chromium } from '@playwright/test';
 const Mailosaur = require('mailosaur');
 
-
-test('login Client', async() =>{
+ test('login Client', async() =>{
     try {
 
         const browser = await chromium.launch();
@@ -26,6 +25,25 @@ test('login Client', async() =>{
 })
 
 
+ test("Client first test", async () => {
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    //const loginPage = new LoginPage(page);
+  
+    await page.goto('https://internal.certaqa.com/');
+    await page.getByRole('link', { name: 'Client/Prospect' }).click();
+    await page.getByTestId('otpform-login-email').click();
+    await page.getByTestId('otpform-login-email').fill('kusum+client@ymb5w90b.mailosaur.net');
+    await page.getByTestId('otpform-login-submit').click();
+    await page.waitForTimeout(5000);
+    const otp = await getOTP();
+    console.log("otp" + otp);
+    await page.locator("//input[@aria-label='Please enter verification code. Digit 1']").type(otp);
+    await page.locator("//button[@class='ant-btn css-1llvq21-Button ant-btn-primary ant-btn-block']").click();
+    await page.waitForTimeout(3000);
+    
+});
 
 async function getOTP() {
     const mailosaurApiKey = '5GlcZBcWXilMJoaXNpJLNBQAXdHSgRLZ';

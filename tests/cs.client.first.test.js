@@ -222,6 +222,7 @@ test('Access for single user in expanded view', async ({ browser }) => {
   await newPage1.locator("//li[@title='Add a user']").click();
   await newPage1.waitForTimeout(5000);
   await newPage1.locator("//input[@value='Single User']").click();
+  await newPage1.pause();
   await newPage1.waitForTimeout(3000);
   await newPage1.locator("(//input[@class='ant-input'])[1]").type("Kusum V");
   await newPage1.locator("//input[@type='email']").type("test1@getcerta.com");
@@ -236,6 +237,55 @@ test('Access for single user in expanded view', async ({ browser }) => {
 });
 
 test('Access for multi user in expanded view', async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto("https://internal.certaqa.com/");
+  await page.getByRole('link', { name: 'Client/Prospect' }).click();
+  await page.locator('//input[@id="email"]').click();
+  await page.locator('//input[@id="email"]').fill('kusum+client@ymb5w90b.mailosaur.net');
+  await page.locator('//button[@type="submit"]').click();
+  await page.waitForTimeout(5000);
+  const otp = await getOTP();
+  console.log("otp" + otp);
+  await page.locator("//input[@aria-label='Please enter verification code. Digit 1']").type(otp);
+  await page.locator('//button[@type="submit"]').click();
+  await page.waitForTimeout(3000);
+  await page.locator("//div[contains(text(),'Create new')]").click();
+  await page.locator("//div[contains(text(),'Certa Support')]").click();
+
+  const [newPage1] = await Promise.all([
+    context.waitForEvent('page'),
+    page.getByRole('button', { name: 'Expanded view' }).click()
+  ])
+
+  console.log(await newPage1.title());
+  await newPage1.locator("//span[@class='ant-cascader-picker-label']").click();
+  await newPage1.locator("//li[@title='Access']").click();
+  await newPage1.locator("//li[@title='Add a user']").click();
+  await newPage1.waitForTimeout(5000);
+  await newPage1.locator("//input[@value='Multiple Users']").click();
+  await newPage1.locator('//span[text()="Download file"]').click();
+  
+  await newPage1.pause();
+  await newPage1.waitForTimeout(3000);
+  const filepath ="C:/Users/91922/Downloads/sample.xlsx";
+  await newPage1.setInputFiles("input[type='file']", filepath);
+  //await expect.soft(page.locator("(//span[text()='Download'])[1]")).toBeVisible();
+
+  const filepath1 ="C:/Users/91922/Downloads/testabc.jpg";
+  await newPage1.setInputFiles("input[type='file']", filepath1);
+ //await expect.soft(page.locator("(//span[text()='Download'])[2]")).toBeVisible();
+
+
+  await newPage1.locator("//input[@value='true']").click();
+  await newPage1.getByRole('button', { name: 'Submit' }).click();
+  //await expect(page.locator("//span[@class='css-1dlvumy-CustomText']")).toHaveText('Request Submitted');
+  console.log('6th test completed asking a quetion');
+  await newPage1.close();
+});
+
+
+test('Change user Access for single user in expanded view', async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto("https://internal.certaqa.com/");
@@ -260,19 +310,67 @@ test('Access for multi user in expanded view', async ({ browser }) => {
   console.log(await newPage1.title());
   await newPage1.locator("//span[@class='ant-cascader-picker-label']").click();
   await newPage1.locator("//li[@title='Access']").click();
-  await newPage1.locator("//li[@title='Add a user']").click();
+  await newPage1.locator("//li[@title='Change user access']").click();
+  await newPage1.waitForTimeout(5000);
+  await newPage1.locator("//input[@value='Single User']").click();
+  await newPage1.waitForTimeout(3000);
+  await newPage1.locator("//input[@type='email']").type("test1@getcerta.com");
+  await newPage1.locator("(//input[@type='text'])[2]").type("Tester");
+  await newPage1.locator("(//input[@type='text'])[3]").type("Dev")
+  const filepath ="C:/Users/91922/Downloads/testabc.jpg";
+  await newPage1.setInputFiles("input[type='file']", filepath);
+  await newPage1.locator("//input[@value='true']").click();
+  await newPage1.getByRole('button', { name: 'Submit' }).click();
+  //await expect(page.locator("//span[@class='css-1dlvumy-CustomText']")).toHaveText('Request Submitted');
+  console.log('7th test completed asking a quetion');
+  await newPage1.close();
+});
+
+
+
+
+test('Change user Access for multi user in expanded view', async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto("https://internal.certaqa.com/");
+  await page.getByRole('link', { name: 'Client/Prospect' }).click();
+  await page.getByTestId('otpform-login-email').click();
+  await page.getByTestId('otpform-login-email').fill('kusum+client@ymb5w90b.mailosaur.net');
+  await page.getByTestId('otpform-login-submit').click();
+  await page.waitForTimeout(5000);
+  const otp = await getOTP();
+  console.log("otp" + otp);
+  await page.locator("//input[@aria-label='Please enter verification code. Digit 1']").type(otp);
+  await page.locator("//button[@class='ant-btn css-1llvq21-Button ant-btn-primary ant-btn-block']").click();
+  await page.waitForTimeout(3000);
+  await page.locator("(//span[@class='button-text css-1hr6m4s-CustomText'])[1]").click();
+  await page.locator("//div[contains(text(),'Certa Support')]").click();
+
+  const [newPage1] = await Promise.all([
+    context.waitForEvent('page'),
+    page.getByRole('button', { name: 'Expanded view' }).click()
+  ])
+
+  console.log(await newPage1.title());
+  await newPage1.locator("//span[@class='ant-cascader-picker-label']").click();
+  await newPage1.locator("//li[@title='Access']").click();
+  await newPage1.locator("//li[@title='Change user access']").click();
   await newPage1.waitForTimeout(5000);
   await newPage1.locator("//input[@value='Multiple Users']").click();
   await newPage1.pause();
   await newPage1.waitForTimeout(3000);
   const filepath ="C:/Users/91922/Downloads/sample.xlsx";
   await newPage1.setInputFiles("input[type='file']", filepath);
+  //await expect.soft(page.locator("(//span[text()='Download'])[1]")).toBeVisible();
 
   const filepath1 ="C:/Users/91922/Downloads/testabc.jpg";
   await newPage1.setInputFiles("input[type='file']", filepath1);
+ // await expect.soft(page.locator("(//span[text()='Download'])[2]")).toBeVisible();
+
+
   await newPage1.locator("//input[@value='true']").click();
   await newPage1.getByRole('button', { name: 'Submit' }).click();
   //await expect(page.locator("//span[@class='css-1dlvumy-CustomText']")).toHaveText('Request Submitted');
-  console.log('5th test completed asking a quetion');
+  console.log('6th test completed asking a quetion');
   await newPage1.close();
 });

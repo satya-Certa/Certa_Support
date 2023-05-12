@@ -1,25 +1,25 @@
 import { test, expect } from '@playwright/test';
-import { getOTP, OTP } from '../pages/otp.spec'
+import { getOTP, OTP } from '../pages/otp.spec';
+const { homePage } = require('../pages/support.homePage');
+const { responseIssue } = require('../pages/support.responseIssue');
 
-test("Report a bug", async ({ browser }) => {
+test("Report a bug", async ({ page }) => {
 
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
-  await page.goto('https://internal.certaqa.com/');
+  await page.goto("https://internal.certaqa.com/");
   await page.getByRole('link', { name: 'Client/Prospect' }).click();
-  await page.getByTestId('otpform-login-email').click();
-  await page.getByTestId('otpform-login-email').fill('kusum+client@ymb5w90b.mailosaur.net');
-  await page.getByTestId('otpform-login-submit').click();
+  await page.locator('//input[@id="email"]').click();
+  await page.locator('//input[@id="email"]').fill('kusum+client@ymb5w90b.mailosaur.net');
+  await page.locator('//button[@type="submit"]').click();
   await page.waitForTimeout(5000);
   const otp = await getOTP();
   console.log("otp" + otp);
   await page.locator("//input[@aria-label='Please enter verification code. Digit 1']").type(otp);
-  await page.locator("//button[@class='ant-btn css-1llvq21-Button ant-btn-primary ant-btn-block']").click();
+  await page.locator('//button[@type="submit"]').click();
   await page.waitForTimeout(3000);
-  await page.locator("(//span[@class='button-text css-1hr6m4s-CustomText'])[1]").click();
+  await page.locator("//div[contains(text(),'Create new')]").click();
   await page.locator("//div[contains(text(),'Certa Support')]").click();
-  await page.waitForTimeout(10000);
+  await page.waitForTimeout(5000);
+  //await page.pause();
   await page.locator("//span[@class='ant-cascader-picker-label']").click();
   await page.locator("//ul//li[text()='Report a bug']").click();
   await page.locator("(//span[@class='button-text css-1hr6m4s-CustomText'])[5]").click();
@@ -32,7 +32,8 @@ test("Report a bug", async ({ browser }) => {
   await page.getByRole('textbox').nth(1).fill('tests');
   await page.getByRole('textbox').nth(2).click();
   await page.getByRole('textbox').nth(2).click();
-  await page.getByRole('textbox').nth(2).fill('https://internal.certaqa.com/process/15907/wizard/?field=2253326&group=46098&step=99715');
+  await page.getByRole('textbox').nth(2).fill('Testing qa');
+  await page.locator("(//textarea[@class='ant-input'])[3]").fill("https://internal.certaqa.com/process/15907/wizard/?field=2253326&group=46098&step=99715");
   await page.locator('(//span[@class="field-label-text css-8jinf7-CustomText"])[3]').click();
   await page.waitForTimeout(5000);
   await page.getByRole('button', { name: 'Continue' }).click();
@@ -44,41 +45,27 @@ test("Report a bug", async ({ browser }) => {
 
 });
 
-test("Response on reported bug", async ({ browser }) => {
-
-  const context = await browser.newContext();
-  const page = await context.newPage();
+test("Response on reported bug as resolved", async ({ page }) => {
 
   await page.goto('https://support.certaqa.com/');
   await page.getByRole('link', { name: 'Certa Support Supplier' }).click();
-  await page.getByTestId('otpform-login-email').fill('kusum+support@bax4kyyk.mailosaur.net');
-  await page.getByTestId('otpform-login-submit').click();
+  await page.locator("//input[@id='email']").fill('kusum+support@bax4kyyk.mailosaur.net');
+  await page.locator("//button[@type='submit']").click();
   await page.waitForTimeout(5000);
   const otp = await OTP()
   console.log("otp" + otp);
-  await page.getByRole('textbox', { name: 'Please enter verification code. Digit 1' }).type(otp);
-  await page.getByTestId('otpform-login-submit').click();
+  await page.locator("(//input[@class='css-19ky68w '])[1]").type(otp);
+  await page.locator("//button[@type='submit']").click();
   await page.waitForTimeout(3000);
-  await page.locator('(//div[@class="css-j1x67s-Stack"])[3]').click();
+  const HomePage = new homePage(page);
+  const AckReq = new responseIssue(page);
+  await HomePage.naviToTask();
+  
   await page.reload();
-  await page.locator('(//span[@class="breadcrumb-text css-14d5xed-CustomText"])[1]').click();
-  await page.locator('//input[@class="ant-checkbox-input"]').click();
-  await page.locator('(//input[@class="ant-select-selection-search-input"])[1]').click();
-  await page.locator('(//div[@class="ant-select-item-option-content"])[1]').click();
-  await page.locator('//span[text()="Submit"]').click();
-  await page.waitForTimeout(10000);
-  await page.locator('(//span[@class="ant-select-selection-search"])[1]').click();
-  await page.locator('(//span[@class="ant-select-selection-search"])[1]').click();
-  await page.locator('//div[text()="Solved"]').click();
-  await page.locator('(//input[@class="ant-select-selection-search-input"])[2]').click();
-  await page.locator('(//div[text()="Code miss"])[2]').click();
-  await page.type('//span[text()="Please provide steps taken to avoid this in future"]//ancestor::div[contains(@class,"ant-col ant-legacy")]/following-sibling::div//textarea', 'follow the docu provided')
-  await page.type('//span[text()="Please add comments for client"]//ancestor::div[contains(@class,"ant-col ant-legacy")]/following-sibling::div//textarea', 'follow the steps')
-  await page.type('//span[text()="Add internal comments"]//ancestor::div[contains(@class,"ant-col ant-legacy")]/following-sibling::div//textarea', 'aditonal comments')
-  await page.type('//span[text()="Please mention the resolution comments"]//ancestor::div[contains(@class,"ant-col ant-legacy")]/following-sibling::div//textarea', 'testing')
-  await page.locator('(//span[@class="field-label-text css-8jinf7-CustomText"])[3]').click();
-  await page.locator('(//input[@class="ant-radio-input"])[2]').click();
-  await page.locator('//span[text()="Submit"]').click();
+  await HomePage.clickRecentIssue();
+  await AckReq.ackRequest();
+  await page.waitForTimeout(5000);
+  await AckReq.updateRequestResolved();
   await expect(page.locator("//span[@class='css-1dlvumy-CustomText']")).toHaveText('Pending Validation');
   await page.close();
 

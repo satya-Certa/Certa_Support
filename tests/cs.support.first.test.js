@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { OTP } from '../pages/otp.spec';
+const { homePage } = require('../pages/support.homePage');
+const { responseIssue } = require('../pages/support.responseIssue');
+
 
 test("Response on reported bug with no deployment needed", async ({ browser }) => {
 
@@ -41,23 +44,33 @@ test("Response on reported bug with no deployment needed", async ({ browser }) =
 
 });
 
-test("Need additional info", async ({ browser }) => {
-
-  const context = await browser.newContext();
-  const page = await context.newPage();
+test("Need additional info", async ({ page }) => {
 
   await page.goto('https://support.certaqa.com/');
   await page.getByRole('link', { name: 'Certa Support Supplier' }).click();
-  await page.getByTestId('otpform-login-email').fill('kusum+support@bax4kyyk.mailosaur.net');
-  await page.getByTestId('otpform-login-submit').click();
+  await page.locator("//input[@id='email']").fill('kusum+support@bax4kyyk.mailosaur.net');
+  await page.locator("//button[@type='submit']").click();
   await page.waitForTimeout(5000);
   const otp = await OTP()
   console.log("otp" + otp);
-  await page.getByRole('textbox', { name: 'Please enter verification code. Digit 1' }).type(otp);
-  await page.getByTestId('otpform-login-submit').click();
+  await page.locator("(//input[@class='css-19ky68w '])[1]").type(otp);
+  await page.locator("//button[@type='submit']").click();
   await page.waitForTimeout(3000);
+
+  const HomePage = new homePage(page);
+  const AckReq = new responseIssue(page);
+  await HomePage.naviToTask();
+  await page.reload();
+  await HomePage.clickRecentIssue();
+  await AckReq.ackRequest();
+  await page.pause();
+  await page.waitForTimeout(5000);
+  await AckReq.updateRequestNAI();
+  await AckReq.editUpdateRequesNAI();
+  /*
   await page.locator('(//div[@class="css-j1x67s-Stack"])[3]').click();
   await page.reload();
+
   await page.locator('(//span[@class="breadcrumb-text css-14d5xed-CustomText"])[1]').click();
   await page.locator('//input[@class="ant-checkbox-input"]').click();
   await page.locator('(//input[@class="ant-select-selection-search-input"])[1]').click();
@@ -68,7 +81,7 @@ test("Need additional info", async ({ browser }) => {
   await page.locator('(//span[@class="ant-select-selection-search"])[1]').click();
   await page.getByText('Need additional info').nth(1).click();
   await page.type('//span[text()="Please mention the information required from client"]//ancestor::div[contains(@class,"ant-col ant-legacy")]/following-sibling::div//textarea', 'Please provide more details')
-  await page.locator('//span[text()="Submit"]').click();
+  await page.locator('//span[text()="Submit"]').click();*/
 
 });
 

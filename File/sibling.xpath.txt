@@ -1,0 +1,29 @@
+For child to parent
+//span[text()="What is the impact? "]//ancestor::div[contains(@class,"ant-col ant-legacy")]/following-sibling::div//textarea
+//span[text()="What is the impact? "]//Preceding::div[contains(@class,"ant-col ant-legacy")]/following-sibling::div//textarea
+
+
+
+Preceding:
+
+In XPath, the "preceding" axis selects all the nodes that come before the current node in document order, i.e., all the nodes that precede the current node. This includes any ancestors, siblings, or even elements in other branches of the document tree that come before the current node.
+--------------------------------------------------------------------------------------------------------------------------------------
+Ancestor: 
+
+An ancestor is any element that is higher up in the document hierarchy than the selected element. In other words, it is any parent, grandparent, great-grandparent, and so on. An ancestor can be selected using the "ancestor" axis in XPath.
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Descendant: 
+
+A descendant is any element that is lower down in the document hierarchy than the selected element. In other words, it is any child, grandchild, great-grandchild, and so on. A descendant can be selected using the "descendant" axis in XPath.
+-------------------------------------------------------------------------------------------------------------------------------------
+
+1) For Siblings: 
+		/Following-siblings::tagname[@attribute='value']
+		/Following::tagname[@attribute='value']
+
+2) For Parent to child:
+		/child::tagname[@attribute='value']
+		/descendent::tagname[@attribute='value']
+		/descendent::tagname[1]
+		/descendent::tagname[2]
